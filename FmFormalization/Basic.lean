@@ -6,8 +6,6 @@ example (x : ℝ) : (x + 1)^2 = x^2 + 2*x + 1 := by ring
 
 example (a b : ℝ) : (a + b)*(a - b) = a^2 - b^2 := by ring
 
-example (i : ℝ) (n : ℕ) : (1 + i)^(n + 1) = (1 + i)^n * (1 + i) := pow_succ _ _
-
 -- 1. A fresh ring identity (your choice, not a Day 2 repeat)
 example (x y : ℝ) : (x + y) ^ 2 = x ^ 2 + 2 * x * y + y ^ 2 := by ring
 
@@ -35,3 +33,4 @@ theorem geom_series_closed_form (x : ℝ) (hx : x ≠ 1) (n : ℕ) :
 theorem accum_factor_succ (i : ℝ) {n : ℕ} : (1 + i)^(n + 1) = (1 + i)^n * (1 + i) := pow_succ _ _
 
 #print axioms geom_series_closed_form
+#print axioms accum_factor_succ
