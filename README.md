@@ -13,6 +13,8 @@ Started Oct 25, 2026, as a one-week from-zero Lean sprint: learn the toolchain, 
 - **Geometric series, closed form.** For `x : ℝ` with `x ≠ 1` and `n : ℕ`:
   `∑ k ∈ Finset.range n, x^k = (x^n - 1) / (x - 1)`, via Mathlib's `geom_sum_eq`. This is the engine of the annuity formulas: an annuity's present value is a geometric series in the discount factor, and this closed form is what turns it into `(1 - v^n) / i`.
 
+A note on the accumulation factor: `n` is a count of periods, so it is a natural number, not a real. With `n : ℝ` the power would be the real power function — and the tempting expansion `1 + n*i + (n(n-1)/2)*i^2` is only the binomial series truncated: exact for `n = 2`, already missing the `i^3` term at `n = 3`. Stating the theorem correctly mattered more than proving it quickly.
+
 ### Foundations (the working toolkit, each proved from scratch)
 
 - Commutativity and identities over ℝ: `a + b = b + a`, `(x + 1)^2 = x^2 + 2x + 1`, `(a + b)(a - b) = a^2 - b^2` — by `ring`.
@@ -40,4 +42,4 @@ The Lean toolchain is pinned by `lean-toolchain` in the repository root; with `e
 
 ## Background
 
-The author is a mathematician and backend software engineer. The companion products are the FM Toolkit calculators — interest theory and loan amortization — whose formulas this project formalizes.
+The author is a mathematician (B.S. Financial Actuarial Mathematics with Specialization in Computing, M.S. Statistics — UCLA) and backend software engineer. The companion products are the FM Toolkit calculators — interest theory and loan amortization — whose formulas this project formalizes.
