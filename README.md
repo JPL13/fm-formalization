@@ -1,6 +1,6 @@
 # fm-formalization
 
-Interest-theory mathematics formalized in Lean 4 with Mathlib — accumulation factors, the geometric series behind the annuity formulas, and the foundations they rest on. Every result listed as proved is proved; nothing here relies on `sorry`.
+Interest-theory mathematics formalized in Lean 4 with Mathlib — accumulation and discount factors, the geometric series behind the annuity formulas, and the foundations they rest on. Every result listed as proved is proved; nothing here relies on `sorry`.
 
 Started Oct 25, 2026, as a one-week from-zero Lean sprint: learn the toolchain, prove the foundations, then formalize the results behind the formulas in my FM Toolkit calculators.
 
@@ -12,6 +12,9 @@ Started Oct 25, 2026, as a one-week from-zero Lean sprint: learn the toolchain, 
   `(1 + i)^(n + 1) = (1 + i)^n * (1 + i)` — each additional period multiplies the accumulated value by `(1 + i)` once more. Proved from `pow_succ`.
 - **Geometric series, closed form.** For `x : ℝ` with `x ≠ 1` and `n : ℕ`:
   `∑ k ∈ Finset.range n, x^k = (x^n - 1) / (x - 1)`, via Mathlib's `geom_sum_eq`. This is the engine of the annuity formulas: an annuity's present value is a geometric series in the discount factor, and this closed form is what turns it into `(1 - v^n) / i`.
+- **Discount factor.** With `v = (1 + i)⁻¹` and `i ≠ -1`:
+  `v * (1 + i) = 1` (`discount_factor_mul`) — discounting one period and accumulating one period cancel. The one real step is the side condition: the algebra needs `1 + i ≠ 0`, which is what `i ≠ -1` says.
+  And `v^n = ((1 + i)^n)⁻¹` (`discount_factor_pow`, via `inv_pow`) — discounting `n` periods is the inverse of accumulating `n` periods, the identity the annuity present value is built from.
 
 A note on the accumulation factor: `n` is a count of periods, so it is a natural number, not a real. With `n : ℝ` the power would be the real power function — and the tempting expansion `1 + n*i + (n(n-1)/2)*i^2` is only the binomial series truncated: exact for `n = 2`, already missing the `i^3` term at `n = 3`. Stating the theorem correctly mattered more than proving it quickly.
 
@@ -29,8 +32,7 @@ A note on the accumulation factor: `n` is a count of periods, so it is a natural
 
 ## In progress (not yet claimed)
 
-- Discount factor `v = (1 + i)⁻¹`, with `v * (1 + i) = 1` under `i ≠ -1`.
-- Annuity-immediate present value `a-angle-n = (1 - v^n) / i` from the geometric series above; then annuity-due and the loan payment formula.
+- Annuity-immediate present value `a-angle-n = (1 - v^n) / i`, assembled from the geometric series and discount factor above; then annuity-due and the loan payment formula.
 
 ## Building
 
