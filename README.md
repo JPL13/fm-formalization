@@ -1,6 +1,6 @@
 # fm-formalization
 
-Interest-theory mathematics formalized in Lean 4 with Mathlib — accumulation and discount factors, the geometric series behind the annuity formulas, and the foundations they rest on. Every result listed as proved is proved; nothing here relies on `sorry`.
+Interest-theory mathematics formalized in Lean 4 with Mathlib — accumulation and discount factors, the geometric series, and the annuity formulas built from them. Every result listed as proved is proved; nothing here relies on `sorry`.
 
 Started Oct 25, 2026, as a one-week from-zero Lean sprint: learn the toolchain, prove the foundations, then formalize the results behind the formulas in my FM Toolkit calculators.
 
@@ -15,6 +15,10 @@ Started Oct 25, 2026, as a one-week from-zero Lean sprint: learn the toolchain, 
 - **Discount factor.** With `v = (1 + i)⁻¹` and `i ≠ -1`:
   `v * (1 + i) = 1` (`discount_factor_mul`) — discounting one period and accumulating one period cancel. The one real step is the side condition: the algebra needs `1 + i ≠ 0`, which is what `i ≠ -1` says.
   And `v^n = ((1 + i)^n)⁻¹` (`discount_factor_pow`, via `inv_pow`) — discounting `n` periods is the inverse of accumulating `n` periods, the identity the annuity present value is built from.
+- **Accumulated value of an annuity (s-angle-n).** For `i ≠ 0` and `n : ℕ`:
+  `∑ k ∈ Finset.range n, (1 + i)^k = ((1 + i)^n - 1) / i` (`s_angle_n`) — a direct application of the geometric series with `x = 1 + i`; the only work is the denominator `(1 + i) - 1 = i`.
+- **Annuity-immediate present value (a-angle-n).** For `i ≠ 0`, `i ≠ -1`, and `n : ℕ`:
+  `∑ k ∈ Finset.range n, v^(k + 1) = (1 - v^n) / i` (`a_angle_n`), where `v = (1 + i)⁻¹`. The present value of 1 paid at the end of each period is a geometric series in `v`; the one real step is `v - 1 = -i * v`, which is the discount-factor identity `v * (1 + i) = 1` expanded.
 
 A note on the accumulation factor: `n` is a count of periods, so it is a natural number, not a real. With `n : ℝ` the power would be the real power function — and the tempting expansion `1 + n*i + (n(n-1)/2)*i^2` is only the binomial series truncated: exact for `n = 2`, already missing the `i^3` term at `n = 3`. Stating the theorem correctly mattered more than proving it quickly.
 
@@ -32,7 +36,7 @@ A note on the accumulation factor: `n` is a count of periods, so it is a natural
 
 ## In progress (not yet claimed)
 
-- Annuity-immediate present value `a-angle-n = (1 - v^n) / i`, assembled from the geometric series and discount factor above; then annuity-due and the loan payment formula.
+- Annuity-due `ä-angle-n = (1 + i) * a-angle-n`, then the loan payment formula `PMT = principal / a-angle-n`.
 
 ## Building
 
