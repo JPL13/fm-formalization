@@ -41,11 +41,42 @@ theorem discount_factor_mul (i : ℝ) (hi : i ≠ -1) :
     linarith
   exact inv_mul_cancel₀ h1
 
+-- Discount factor v^n = (1 + i)⁻ⁿ, where v = (1 + i)⁻¹
 theorem discount_factor_pow (i : ℝ) (hi : i ≠ -1) (n : ℕ) :
     ((1 + i)⁻¹) ^ n = ((1 + i) ^ n)⁻¹ := by
   rw [inv_pow]
+
+-- Accumulated value: the direct geom_sum_eq application
+theorem s_angle_n (i : ℝ) (hi : i ≠ 0) (n : ℕ) :
+    (∑ k ∈ Finset.range n, (1 + i) ^ k) = ((1 + i) ^ n - 1) / i := by
+  rw [geom_sum_eq (by intro h; apply hi; linarith : (1 + i) ≠ 1) n]
+  field_simp [hi]
+  ring
+
+-- Annuity-immediate: present value of 1 at the end of each period
+theorem a_angle_n (i : ℝ) (hi0 : i ≠ 0) (hi1 : i ≠ -1) (n : ℕ) :
+    (∑ k ∈ Finset.range n, ((1 + i) ⁻¹) ^ (k + 1)) = (1 - ((1 + i) ⁻¹) ^ n) / i := by
+  set v := (1 + i) ⁻¹ with hv
+  have h1i : (1 : ℝ) + i ≠ 0 := by intro h; apply hi1; linarith
+  have hv0 : v ≠ 0 := by rw [hv]; exact inv_ne_zero h1i
+  have hv1 : v ≠ 1 := by
+    rw [hv]
+    intro h
+    apply hi0
+    have h2 : (1 : ℝ) + i = 1 := inv_eq_one.mp h
+    linarith
+  have hw2 : v - 1 = -i * v := by
+    have hvmul : v * (1 + i) = 1 := by rw [hv]; exact discount_factor_mul i hi1
+    have h2 : (1 : ℝ) = v + i * v := by rw [← hvmul]; ring
+    linarith
+  simp only [pow_succ]
+  rw [← Finset.sum_mul, geom_sum_eq hv1 n, hw2]
+  field_simp [hi0, hv0]
+  ring
 
 #print axioms geom_series_closed_form
 #print axioms accum_factor_succ
 #print axioms discount_factor_mul
 #print axioms discount_factor_pow
+#print axioms s_angle_n
+#print axioms a_angle_n
