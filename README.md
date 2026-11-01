@@ -19,6 +19,8 @@ Started Oct 25, 2026, as a one-week from-zero Lean sprint: learn the toolchain, 
   `∑ k ∈ Finset.range n, (1 + i)^k = ((1 + i)^n - 1) / i` (`s_angle_n`) — a direct application of the geometric series with `x = 1 + i`; the only work is the denominator `(1 + i) - 1 = i`.
 - **Annuity-immediate present value (a-angle-n).** For `i ≠ 0`, `i ≠ -1`, and `n : ℕ`:
   `∑ k ∈ Finset.range n, v^(k + 1) = (1 - v^n) / i` (`a_angle_n`), where `v = (1 + i)⁻¹`. The present value of 1 paid at the end of each period is a geometric series in `v`; the one real step is `v - 1 = -i * v`, which is the discount-factor identity `v * (1 + i) = 1` expanded.
+- **Annuity-due (ä-angle-n).** Payments at the *beginning* of each period are the annuity-immediate payments shifted one period earlier, so `ä-angle-n = (1 + i) * a-angle-n`: first as a sum identity, `(1 + i) * ∑ k ∈ Finset.range n, v^(k + 1) = ∑ k ∈ Finset.range n, v^k` (`annuity_due_sum`, only `i ≠ -1` needed — each term collapses by `(1 + i) * v = 1`), and then in closed form `∑ k ∈ Finset.range n, v^k = (1 + i) * ((1 - v^n) / i)` (`a_due_angle_n`, for `i ≠ 0` and `i ≠ -1`) by rewriting with `a_angle_n`.
+- **Loan payment.** A level payment of `PMT = P / a-angle-n` exactly repays a loan of principal `P`: `(P / A) * A = P` for any `A ≠ 0` (`loan_payment`, which is Mathlib's `div_mul_cancel₀`), instantiated at `A = a-angle-n` with its nonzero hypothesis stated explicitly. In closed form, `PMT = P * i / (1 - v^n)`.
 
 A note on the accumulation factor: `n` is a count of periods, so it is a natural number, not a real. With `n : ℝ` the power would be the real power function — and the tempting expansion `1 + n*i + (n(n-1)/2)*i^2` is only the binomial series truncated: exact for `n = 2`, already missing the `i^3` term at `n = 3`. Stating the theorem correctly mattered more than proving it quickly.
 
@@ -36,7 +38,7 @@ A note on the accumulation factor: `n` is a count of periods, so it is a natural
 
 ## In progress (not yet claimed)
 
-- Annuity-due `ä-angle-n = (1 + i) * a-angle-n`, then the loan payment formula `PMT = principal / a-angle-n`.
+- Nothing at the moment — the chain is complete: accumulation factor → discount factor → geometric series → annuity-immediate → annuity-due → loan payment, each proved and axiom-checked.
 
 ## Building
 
