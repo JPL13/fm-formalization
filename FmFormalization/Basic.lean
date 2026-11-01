@@ -74,9 +74,37 @@ theorem a_angle_n (i : ℝ) (hi0 : i ≠ 0) (hi1 : i ≠ -1) (n : ℕ) :
   field_simp [hi0, hv0]
   ring
 
+-- Annuity-due as a corollary of annuity-immediate: (1 + i) * a = ä
+-- State it against the sum form first; the closed form follows by rewriting with a-angle-n.
+theorem annuity_due_sum (i : ℝ) (hi1 : i ≠ -1) (n : ℕ) :
+    (1 + i) * (∑ k ∈ Finset.range n, ((1 + i) ⁻¹) ^ (k + 1))
+      = ∑ k ∈ Finset.range n, ((1 + i) ⁻¹) ^ k := by
+  set v := (1 + i) ⁻¹ with hv
+  have h2 : v * (1 + i) = 1 := by rw [hv]; exact discount_factor_mul i hi1
+  have h3 : (1 + i) * v = 1 := by rw [mul_comm]; exact h2
+  have h4 : ∀ k : ℕ, (1 + i) * v ^ (k + 1) = v ^ k := by
+    intro k
+    have hstep : (1 + i) * v ^ (k + 1) = v ^ k * ((1 + i) * v) := by
+      rw [pow_succ]; ring
+    rw [hstep, h3, mul_one]
+  rw [Finset.mul_sum]
+  exact Finset.sum_congr rfl fun k _ => h4 k
+
+theorem a_due_angle_n (i : ℝ) (hi0 : i ≠ 0) (hi1 : i ≠ -1) (n : ℕ) :
+    (∑ k ∈ Finset.range n, ((1 + i) ⁻¹) ^ k)
+      = (1 + i) * ((1 - ((1 + i) ⁻¹) ^ n) / i) := by
+  rw [← annuity_due_sum i hi1 n, a_angle_n i hi0 hi1 n]
+
+-- Loan payment: principal / a-angle-n repays the loan, given a-angle-n ≠ 0
+theorem loan_payment (P A: ℝ) (hA : A ≠ 0) :
+    (P / A) * A = P := div_mul_cancel₀ P hA
+
 #print axioms geom_series_closed_form
 #print axioms accum_factor_succ
 #print axioms discount_factor_mul
 #print axioms discount_factor_pow
 #print axioms s_angle_n
 #print axioms a_angle_n
+#print axioms annuity_due_sum
+#print axioms a_due_angle_n
+#print axioms loan_payment
